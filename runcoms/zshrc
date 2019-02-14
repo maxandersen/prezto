@@ -5,8 +5,6 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
-# need to customize fpath before prezto init is done which will call compinit
-fpath=( /usr/local/share/zsh/site-functions $fpath )
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
@@ -15,7 +13,26 @@ fi
 
 # Customize to your needs...
 
-# cd will look into these in addition to current directory.
-setopt auto_cd
-cdpath=(~ ~/code ~/code/jbosstools ~/code/jbdevstudio)
+source <(rbenv init -)
 
+function exists { which $1 &> /dev/null }
+
+if exists percol; then
+    function percol_select_history() {
+        local tac
+        exists gtac && tac="gtac" || { exists tac && tac="tac" || { tac="tail -r" } }
+        BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
+        CURSOR=$#BUFFER         # move cursor
+        zle -R -c               # refresh
+    }
+
+    zle -N percol_select_history
+    bindkey '^R' percol_select_history
+fi
+
+
+# added by pipsi (https://github.com/mitsuhiko/pipsi)
+export PATH="/Users/max/.local/bin:$PATH"
+
+# added by pipsi (https://github.com/mitsuhiko/pipsi)
+export PATH="/Users/max/.local/bin:$PATH"
