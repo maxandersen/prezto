@@ -5,9 +5,17 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
+# need to customize fpath before prezto init is done which will call compinit
+fpath=( /usr/local/share/zsh/site-functions $fpath )
+
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
 # Customize to your needs...
+
+# cd will look into these in addition to current directory.
+setopt auto_cd
+cdpath=(~ ~/code ~/code/jbosstools ~/code/jbdevstudio)
+
