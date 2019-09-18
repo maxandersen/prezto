@@ -13,7 +13,6 @@ fi
 
 # Customize to your needs...
 
-source <(rbenv init -)
 
 function exists { which $1 &> /dev/null }
 
@@ -34,5 +33,15 @@ fi
 # added by pipsi (https://github.com/mitsuhiko/pipsi)
 export PATH="/Users/max/.local/bin:$PATH"
 
-# added by pipsi (https://github.com/mitsuhiko/pipsi)
-export PATH="/Users/max/.local/bin:$PATH"
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/Users/max/.sdkman"
+[[ -s "/Users/max/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/max/.sdkman/bin/sdkman-init.sh"
+
+alias mvn=mw
+alias mem='ps ax -o pid,rss,command | numfmt --header --from-unit=1024 --to=iec --field 2'
