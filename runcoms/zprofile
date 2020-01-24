@@ -38,10 +38,16 @@ typeset -gU cdpath fpath mailpath path
 
 setopt auto_cd
 
+## don't error on no glob matches:
+setopt +o nomatch
+
 # Set the list of directories that cd searches.
 cdpath=(
    $cdpath
-   ~/code
+   ~/code/work/quarkus
+   ~/code/personal
+   ~/code/work
+   ~/Dropbox
    ~
 )
 
@@ -76,3 +82,5 @@ setopt INC_APPEND_HISTORY        # Write to the history file immediately, not wh
 setopt SHARE_HISTORY             # Share history between all sessions.
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
+
+setopt completealiases           # offer completions for aliases, such as mvn

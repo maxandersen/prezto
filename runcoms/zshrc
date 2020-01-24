@@ -1,4 +1,4 @@
-#
+# -*- mode: sh -*-
 # Executes commands at the start of an interactive session.
 #
 # Authors:
@@ -12,6 +12,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+
+export PATH="~/.krew/bin:$PATH"
 
 
 function exists { which $1 &> /dev/null }
@@ -30,11 +32,74 @@ if exists percol; then
 fi
 
 
-# added by pipsi (https://github.com/mitsuhiko/pipsi)
+#added by pipsi (https://github.com/mitsuhiko/pipsi)
 export PATH="/Users/max/.local/bin:$PATH"
 
-export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
+
+# setup mdub and gdub
+alias mvn=mw
+alias gradle=gw
+alias mem='ps ax -o pid,rss,command | numfmt --header --from-unit=1024 --to=iec --field 2'
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+#source "/usr/local/opt/kube-ps1/share/kube-ps1.sh"
+#RPROMPT='$(kube_ps1)'
+## avoid clutter when copy/pasting
+unset RPROMPT
+
+## taken from https://www.emacswiki.org/emacs/EmacsClient
+em()
+{
+    args=""
+    nw=false
+    # check if emacsclient is already running
+    if pgrep -U $(id -u) emacsclient > /dev/null; then running=true; fi
+
+    # check if the user wants TUI mode
+    for arg in "$@"; do
+    	if [ "$arg" = "-nw" ] || [ "$arg" = "-t" ] || [ "$arg" = "--tty" ]; then
+    	    nw=true
+    	fi
+    done
+
+    # if called without arguments - open a new gui instance
+    if [ "$#" -eq "0" ] || [ "$running" != true ]; then
+	    args=(-c $args) 		# open emacsclient in a new window
+    fi
+    if [ "$#" -gt "0" ]; then
+	# if 'em -' open standard input (e.g. pipe)
+	if [[ "$1" == "-" ]]; then
+    	    TMP="$(mktemp /tmp/emacsstdin-XXX)"
+    	    cat >$TMP
+	    args=($args --eval '(let ((b (generate-new-buffer "*stdin*"))) (switch-to-buffer b) (insert-file-contents "'${TMP}'") (delete-file "'${TMP}'"))')
+	else
+	    args=($@ $args)
+	fi
+    fi
+
+    # emacsclient $args
+    if $nw; then
+	    emacsclient "${args[@]}"
+    else
+	    (nohup emacsclient "${args[@]}" > /dev/null 2>&1 &) > /dev/null
+    fi
+}
+
+
+kubectl () {
+  command kubectl $*
+  if [[ -z $KUBECTL_COMPLETE ]]
+  then
+    source <(command kubectl completion zsh)
+    KUBECTL_COMPLETE=1
+  fi
+}
+
+# added by travis gem
+[ -f /Users/max/.travis/travis.sh ] && source /Users/max/.travis/travis.sh
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
@@ -42,6 +107,3 @@ export PATH="$PATH:$HOME/.rvm/bin"
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/max/.sdkman"
 [[ -s "/Users/max/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/max/.sdkman/bin/sdkman-init.sh"
-
-alias mvn=mw
-alias mem='ps ax -o pid,rss,command | numfmt --header --from-unit=1024 --to=iec --field 2'
