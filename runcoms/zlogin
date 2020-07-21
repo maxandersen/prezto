@@ -23,12 +23,6 @@ if [[ -o INTERACTIVE && -t 2 ]]; then
     print
   fi
 
-<<<<<<< HEAD
 fi >&2
-||||||| merged common ancestors
-} >&2
-=======
-} >&2
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
->>>>>>> fix: more history
